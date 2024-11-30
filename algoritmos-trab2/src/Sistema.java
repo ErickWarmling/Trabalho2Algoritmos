@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 
 public class Sistema {
 
@@ -21,14 +20,22 @@ public class Sistema {
 
 
         // Obtendo as entradas do programa (TESTE)
-        int algoritmo = 3;
-        String arquivoSala = "src/sala2.txt";
+        int algoritmo = 2;
+        String arquivoSala = "src/sala10.txt";
+
+        for (int i = 1; i <= 12 ; i++) {
+            arquivoSala = "src/sala" +i+ ".txt";
+            carregarSala(arquivoSala);
+            algoritmoBasico(algoritmo);
+            grafo.clear();
+            alocacao.clear();
+        }
 
         if (algoritmo < 1 || algoritmo > 4) {
             System.out.println("Algoritmo inválido.");
         } else {
-            carregarSala(arquivoSala);
-            algoritmoBasico(algoritmo);
+//            carregarSala(arquivoSala);
+//            algoritmoBasico(algoritmo);
         }
     }
 
@@ -85,8 +92,8 @@ public class Sistema {
      */
     private static int calculaMaiorPontuacao(List<Integer> vertices, int estrategiaPontuacao) {
         int melhor = vertices.getFirst();
-        int pontuacaoVertice = 0;
-        int pontuacaoMelhor = 0;
+        double pontuacaoVertice = 0;
+        double pontuacaoMelhor = 0;
         for (Integer v : vertices) {
             switch (estrategiaPontuacao) {
                 case 1:
@@ -102,8 +109,8 @@ public class Sistema {
                     pontuacaoMelhor = pontuacaoVizinhosSemProva(melhor);
                     break;
                 case 4:
-//                    pontuacaoVertice = algoritmoA4(v);
-//                    pontuacaoMelhor = algoritmoA4(melhor);
+                    pontuacaoVertice = pontuacaoAlgoritmoA4(v);
+                    pontuacaoMelhor = pontuacaoAlgoritmoA4(melhor);
                     break;
             }
 
@@ -172,8 +179,22 @@ public class Sistema {
         return count;
     }
 
-    private static void algoritmoA4() {
-        // Implementação do algoritmo personalizado (exemplo: combinação de estratégias).
-    }
+    private static double pontuacaoAlgoritmoA4(int mesa) {
+        // Estado do grafo (quantidade de vértices alocados e não alocados)
+        int totalVertices = grafo.size();
+        int alocados = alocacao.size();
+        int naoAlocados = totalVertices - alocados;
 
+        // Pesos adaptativos
+        double alfa = 1.0;  // Peso para o grau do vértice
+        double beta = 2.0 * naoAlocados / totalVertices;  // Peso dinâmico para vizinhos sem prova
+        double gamma = 1.5 * alocados / totalVertices;   // Peso dinâmico para vizinhos com prova
+
+        int grau = pontuacaoGrau(mesa);
+        int vizinhosComProva = pontuacaoVizinhosComProva(mesa);
+        int vizinhosSemProva = pontuacaoVizinhosSemProva(mesa);
+
+        // Fórmula combinada
+        return alfa * grau + beta * vizinhosSemProva - gamma * vizinhosComProva;
+    }
 }
