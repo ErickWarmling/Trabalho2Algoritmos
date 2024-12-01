@@ -3,6 +3,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Acadêmicos:
+ * Erick Augusto Warmling
+ * Lucas Emanoel Gitirana
+ * */
 public class AlocaProvas {
 
     private static Map<Integer, List<Integer>> grafo = new HashMap<>();
